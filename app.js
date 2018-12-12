@@ -11,7 +11,7 @@ var dataController = (function() {
     }
 
     return {
-        addItem: function(val, bool) {
+        addItem: function(val) {
             var newItem, id;
 
             // create a new id 
@@ -22,13 +22,15 @@ var dataController = (function() {
             }
 
             // create a new item
-            newItem = new ListItem(id, val, bool);
+            newItem = new ListItem(id, val);
 
             // push new item into data structure
             data.items.push(newItem);
 
             // return it
-            return newItem;
+            if (val !== "") {
+                return newItem;
+            }
         },
 
         removeItem: function(id) {
@@ -61,7 +63,8 @@ var uiController = (function() {
         btnSubmit: '.btn-submit',
         btnDelete: '.btn-delete',
         btnDone: '.btn-done',
-        listContainer: '.list'
+        listContainer: '.list',
+        errorMess: '.error-message'
     }
 
     return {
@@ -78,17 +81,18 @@ var uiController = (function() {
         displayItem: function(obj) {
             var html, newHtml, container;
 
-            // get items wrapper to insert
-            container = DOMstrings.listContainer;
+            if (obj.val !== undefined) {
+                // get items wrapper to insert
+                container = DOMstrings.listContainer;
 
-            // create html with placeholders
-            html = '<div id="item-%id%" class="row"><div class="list-item six columns">%val%</div><div class="list-actions six columns"><button type="button" class="button-primary btn-done">Done</button><button type="button" class="btn-delete">Delete</button></div></div>';
-            newHtml = html.replace('%id%', obj.id);
-            newHtml = newHtml.replace('%val%', obj.val);
+                // create html with placeholders
+                html = '<div id="item-%id%" class="row"><div class="list-item six columns">%val%</div><div class="list-actions six columns"><button type="button" class="button-primary btn-done">Done</button><button type="button" class="btn-delete">Delete</button></div></div>';
+                newHtml = html.replace('%id%', obj.id);
+                newHtml = newHtml.replace('%val%', obj.val);
 
-            // insert new html into DOM container
-            document.querySelector(container).insertAdjacentHTML('beforeend', newHtml);
-
+                // insert new html into DOM container
+                document.querySelector(container).insertAdjacentHTML('beforeend', newHtml);
+            }
         },
 
         removeListItem: function(id) {
@@ -135,13 +139,20 @@ var managerController = (function(dataCtrl, uiCtrl) {
     }
 
     var onAddItem = function() {
-        var input;
+        var input, value, DOM;
+        
+        DOM = uiCtrl.getDOMstrings();
 
         // get input data
         input = uiCtrl.getInput();
 
         // add item to data controller
-        newItem = dataCtrl.addItem(input.value);
+        if (input.value !== "") {
+            newItem = dataCtrl.addItem(input.value);
+            document.querySelector(DOM.errorMess).innerHTML = "";
+        } else {
+            newItem = document.querySelector(DOM.errorMess).innerHTML = "Please provide something to do :)";
+        }
 
         // add item to the ui
         uiCtrl.displayItem(newItem);
