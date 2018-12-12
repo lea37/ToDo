@@ -1,7 +1,9 @@
 // Data Controller
 var dataController = (function() {
     var data = {
-        items: []
+        items: [],
+        total: 0,
+        totalDone: 0
     }
 
     var ListItem = function(id, val) {
@@ -31,6 +33,8 @@ var dataController = (function() {
             if (val !== "") {
                 return newItem;
             }
+
+            var total = data.items.length;
         },
 
         removeItem: function(id) {
@@ -53,6 +57,27 @@ var dataController = (function() {
             data.items[el].isDone = true;
         },
 
+        getTotalCount: function() {
+            var total = data.items.length;
+            data.total = total;
+
+            return total;
+        },
+
+        getTotalDoneItem: function() {
+            var doneArr = [];
+            data.items.map(function(current, index){
+                if (current.isDone === true) {
+                    doneArr.push(data.items[index]);
+                }
+            });
+
+            total = doneArr.length;
+            data.totalDone = total;
+
+            return total;
+        },
+
         testing: function() {
             console.log(data);
         }
@@ -68,7 +93,10 @@ var uiController = (function() {
         btnDelete: '.btn-delete',
         btnDone: '.btn-done',
         listContainer: '.list',
-        errorMess: '.error-message'
+        errorMess: '.error-message',
+        counter: '.counter',
+        countDone: '.counter-done',
+        countTotal: '.counter-total'
     }
 
     return {
@@ -111,6 +139,14 @@ var uiController = (function() {
             document.getElementById(id).classList.add('is-done');
         },
 
+        updateTotalCount: function(totalVal) {
+            document.querySelector(DOMstrings.countTotal).innerText = totalVal;
+        },
+
+        updateTotalDone: function(totalDone) {
+            document.querySelector(DOMstrings.countDone).innerText = totalDone;
+        },
+
         clearInput: function() {
             var field;
 
@@ -142,6 +178,22 @@ var managerController = (function(dataCtrl, uiCtrl) {
 
     }
 
+
+    var updateCounter = function() {
+        // update counter data
+        totalCount = dataCtrl.getTotalCount();
+
+        // display ui total count
+        uiCtrl.updateTotalCount(totalCount);
+
+        // update total done
+        totalDone = dataCtrl.getTotalDoneItem();
+
+        // display ui total done
+        uiCtrl.updateTotalDone(totalDone);
+    }
+
+
     var onAddItem = function() {
         var input, value, DOM;
         
@@ -163,6 +215,9 @@ var managerController = (function(dataCtrl, uiCtrl) {
 
         // clear input and focus back on
         uiCtrl.clearInput();
+
+        // update total count
+        updateCounter();
     }
 
     var onUpdateItem = function(event) {
@@ -188,6 +243,9 @@ var managerController = (function(dataCtrl, uiCtrl) {
                 uiCtrl.updateItem(itemId);
             }
         }
+
+        // update total count
+        updateCounter();
     }
 
     return {
