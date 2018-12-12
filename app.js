@@ -155,7 +155,7 @@ var managerController = (function(dataCtrl, uiCtrl) {
             newItem = dataCtrl.addItem(input.value);
             document.querySelector(DOM.errorMess).innerHTML = "";
         } else {
-            newItem = document.querySelector(DOM.errorMess).innerHTML = "Please provide something to do :)";
+            newItem = document.querySelector(DOM.errorMess).innerHTML = "Come on... I need something to do ! :)";
         }
 
         // add item to the ui
