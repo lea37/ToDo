@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/skeleton.css">
+    <style>
+        .list .row {
+            border-top: 1px solid #eee;
+            padding: 20px 0;
+        }
+
+        .list-item {
+            text-align: left;
+        }
+
+        .list-actions {
+            text-align: right;
+        }
+
+        .list-actions .button-primary {
+            margin-right: 1em;
+        }
+
+        button {
+            margin-bottom: 0;
+        }
+        
+        .listWrapper,
+        .form {
+            text-align: center;
+        }
+
+        /*done*/
+        .list .row.is-done .list-item {
+            text-decoration: line-through;
+            font-style: italic;
+            color: #ccc;
+        }
+
+        .list .row.is-done .btn-done {
+            background-color: #ccc;
+            border-color: #ccc;
+        }
+
+        .list .row.is-done .btn-done:hover {
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="listWrapper">
+        <div class="container">
+            <h1>To Do List</h1>
+            <div class="row">
+                <div class="form">
+                    <input type="text" placeholder="Buy food" class="input-add">
+                    <button class="btn-submit">Add</button>
+                </div>
+            </div>
+            <div class="list">
+                <!-- <div class="row">
+                    <div class="list-item six columns">
+                        First item
+                    </div>
+                    <div class="list-actions six columns">
+                        <button type="button" class="button-primary">Done</button>
+                        <button type="button">Delete</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="list-item six columns">
+                        Second item
+                    </div>
+                    <div class="list-actions six columns">
+                        <button type="button" class="button-primary">Done</button>
+                        <button type="button">Delete</button>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="app.js"></script>
+</html>
