@@ -49,6 +49,10 @@ var dataController = (function() {
             }
         },
 
+        updateItemStatus: function(el) {
+            data.items[el].isDone = true;
+        },
+
         testing: function() {
             console.log(data);
         }
@@ -177,6 +181,9 @@ var managerController = (function(dataCtrl, uiCtrl) {
                 // remove item from ui
                 uiCtrl.removeListItem(itemId);
             } else if (event.target.classList.contains('btn-done')) {
+                // update data
+                dataCtrl.updateItemStatus(index);
+
                 // apply done ui
                 uiCtrl.updateItem(itemId);
             }
