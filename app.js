@@ -78,6 +78,25 @@ var dataController = (function() {
             return total;
         },
 
+        reorderDataOnDrag: function(oldIndex, newIndex) {
+            var indexArray = data.items;
+
+            if (newIndex >= indexArray.length) {
+                var k = newIndex - indexArray.length + 1;
+                while (k--) {
+                    indexArray.push(undefined);
+                }
+            }
+
+            indexArray.splice(newIndex, 0, indexArray.splice(oldIndex, 1)[0]);
+            return indexArray; // for testing
+        },
+
+        getData: function() {
+            var j = data;
+            return j;
+        },
+
         testing: function() {
             console.log(data);
         }
@@ -160,9 +179,12 @@ var uiController = (function() {
 })();
 
 
-var dndController = function() {
+var dndController = function(dataCtrl) {
     var listItems = document.querySelectorAll('.draggable');
     var dragSrcEl_ = null;
+    var dragTrgEl_ = null;
+    var srcId = null;
+    var targetId = null;
 
     return {
         onDragStart: function(e) {
@@ -170,13 +192,16 @@ var dndController = function() {
             e.dataTransfer.setData('text/html', this.innerHTML);
             dragSrcEl_ = this;
             this.classList.add('moving');
+
+            // get target id
+            var fullId = e.target.id;
+            splitId = fullId.split('-');
+            srcId = parseInt(splitId[1]);
         },
         onDragOver: function(e) {
-            if (e.preventDefault) {
-                 e.preventDefault();
-             }
-             e.dataTransfer.dropEffect = 'move';
-             return false;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
         },
         onDragEnter: function(e) {
             this.classList.add('over');
@@ -185,14 +210,29 @@ var dndController = function() {
             this.classList.remove('over');
         },
         onDrop: function(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
+            e.stopPropagation();
             this.classList.remove('over');
             if (dragSrcEl_ != this) {
                 dragSrcEl_.innerHTML = this.innerHTML;
                 this.innerHTML = e.dataTransfer.getData('text/html');
+
+                // get target id
+                dragTrgEl_ = e.target;
+                var fullId = dragTrgEl_.id;
+                splitId = fullId.split('-');
+                targetId = parseInt(splitId[1]);
+
+                dataCtrl.reorderDataOnDrag(srcId, targetId);
+
+                if (dragSrcEl_.classList.contains('is-done') && !dragTrgEl_.classList.contains('is-done')) {
+                    dragSrcEl_.classList.remove('is-done');
+                    dragTrgEl_.classList.add('is-done');
+                } else if(!dragSrcEl_.classList.contains('is-done') && dragTrgEl_.classList.contains('is-done')) {
+                    dragSrcEl_.classList.add('is-done');
+                    dragTrgEl_.classList.remove('is-done');
+                }
             }
+
             return false;
         },
         onDragEnd: function(e) {
@@ -202,7 +242,7 @@ var dndController = function() {
             });
         }
     }
-}();
+}(dataController);
 
 
 // Manager Controller
@@ -266,12 +306,12 @@ var managerController = (function(dataCtrl, uiCtrl, dndCtrl) {
         // Sort items
         var items = document.querySelectorAll(DOM.dragEl);
         [].forEach.call(items, function (item) {
-             item.addEventListener('dragstart', dndController.onDragStart, false);
-             item.addEventListener('dragenter', dndController.onDragEnter, false);
-             item.addEventListener('dragover', dndController.onDragOver, false);
-             item.addEventListener('dragleave', dndController.onDragLeave, false);
-             item.addEventListener('drop', dndController.onDrop, false);
-             item.addEventListener('dragend', dndController.onDragEnd, false);
+             item.addEventListener('dragstart', dndCtrl.onDragStart, false);
+             item.addEventListener('dragenter', dndCtrl.onDragEnter, false);
+             item.addEventListener('dragover', dndCtrl.onDragOver, false);
+             item.addEventListener('dragleave', dndCtrl.onDragLeave, false);
+             item.addEventListener('drop', dndCtrl.onDrop, false);
+             item.addEventListener('dragend', dndCtrl.onDragEnd, false);
         });
     }
 
@@ -307,7 +347,6 @@ var managerController = (function(dataCtrl, uiCtrl, dndCtrl) {
         init: function() {
             console.log('Application has started');
             setUpEvents();
-            dndController.test();
         } 
     }
 })(dataController, uiController, dndController);
