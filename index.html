@@ -6,10 +6,34 @@
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/skeleton.css">
     <style>
+        .draggable {
+          -moz-user-select: none;
+          -khtml-user-select: none;
+          -webkit-user-select: none;
+          user-select: none;
+          /* Required to make elements draggable in old WebKit */
+          -khtml-user-drag: element;
+          -webkit-user-drag: element;
+        }
+
+        .draggable.over {
+            background-color: #eee;
+        }
+
         .list .row,
         .counter {
             border-top: 1px solid #eee;
-            padding: 20px 0;
+            border-bottom: 1px dashed #FFF;
+            border-left: 1px dashed #FFF;
+            border-right: 1px dashed #FFF;
+            padding: 20px 10px;
+        }
+
+        .list .row:hover {
+            border: 1px dashed #ccc;
+            background-color: #eee;
+            border-radius: 3px;
+            cursor: move;
         }
 
         .list-item {
@@ -52,6 +76,13 @@
         .list .row.is-done .btn-done:hover {
             cursor: not-allowed;
         }
+
+        [draggable] {
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -65,24 +96,6 @@
                 </div>
             </div>
             <div class="list">
-                <!-- <div class="row">
-                    <div class="list-item six columns">
-                        First item
-                    </div>
-                    <div class="list-actions six columns">
-                        <button type="button" class="button-primary">Done</button>
-                        <button type="button">Delete</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="list-item six columns">
-                        Second item
-                    </div>
-                    <div class="list-actions six columns">
-                        <button type="button" class="button-primary">Done</button>
-                        <button type="button">Delete</button>
-                    </div>
-                </div> -->
                 <div class="error-message"></div>
             </div>
             <div class="counter"><span class="counter-done">0</span>/<span class="counter-total">0</span></div>
@@ -90,4 +103,5 @@
     </div>
 </body>
 <script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="drag.js"></script>
 </html>
