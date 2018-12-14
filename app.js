@@ -337,11 +337,17 @@ var managerController = (function(dataCtrl, uiCtrl, dndCtrl) {
             index = parseInt(splitId[1]);
 
             if (event.target.classList.contains('btn-delete')) {
-                // remove item from data structure
-                dataCtrl.removeItem(index);
+                var confirmaton = confirm('Are you sur you want to delete this item ?');
 
-                // remove item from ui
-                uiCtrl.removeListItem(itemId);
+                if (confirmaton) {
+                    // remove item from data structure
+                    dataCtrl.removeItem(index);
+                    
+                    // remove item from ui
+                    uiCtrl.removeListItem(itemId);
+                }
+
+
             } else if (event.target.classList.contains('btn-done')) {
                 // update data
                 dataCtrl.updateItemStatus(index);
