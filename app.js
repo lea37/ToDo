@@ -116,7 +116,8 @@ var uiController = (function() {
         counter: '.counter',
         countDone: '.counter-done',
         countTotal: '.counter-total',
-        dragEl: '.draggable'
+        dragEl: '.draggable',
+        empty: '.empty-state'
     }
 
     return {
@@ -138,7 +139,7 @@ var uiController = (function() {
                 container = DOMstrings.listContainer;
 
                 // create html with placeholders
-                html = '<div id="item-%id%" class="row draggable" draggable="true"><div class="inner"><div class="list-item six columns">%val%</div><div class="list-actions six columns"><button type="button" class="button-primary btn-done">Done</button><button type="button" class="btn-delete">Delete</button></div></div></div>';
+                html = '<div id="item-%id%" class="row draggable fade" draggable="true"><div class="inner"><div class="list-item six columns">%val%</div><div class="list-actions six columns"><button type="button" class="button-primary btn-done">Done</button><button type="button" class="btn-delete">Delete</button></div></div></div>';
                 newHtml = html.replace('%id%', obj.id);
                 newHtml = newHtml.replace('%val%', obj.val);
 
@@ -151,6 +152,7 @@ var uiController = (function() {
             var parent, el;
 
             el = document.getElementById(id);
+            el.classList.remove('fade');
             parent = el.parentNode;
             parent.removeChild(el);
         },
@@ -193,7 +195,7 @@ var dndController = function(dataCtrl) {
             dragSrcEl_ = this;
             this.classList.add('moving');
 
-            // get target id
+            // get src el id
             var fullId = e.target.id;
             splitId = fullId.split('-');
             srcId = parseInt(splitId[1]);
@@ -209,21 +211,24 @@ var dndController = function(dataCtrl) {
         onDragLeave: function() {
             this.classList.remove('over');
         },
-        onDrop: function(e) {
+        onDrop: function(e, el) {
             e.stopPropagation();
             this.classList.remove('over');
+
             if (dragSrcEl_ != this) {
                 dragSrcEl_.innerHTML = this.innerHTML;
                 this.innerHTML = e.dataTransfer.getData('text/html');
 
-                // get target id
+                // get target el id
                 dragTrgEl_ = e.target;
                 var fullId = dragTrgEl_.id;
                 splitId = fullId.split('-');
                 targetId = parseInt(splitId[1]);
 
+                // reorder data structure
                 dataCtrl.reorderDataOnDrag(srcId, targetId);
 
+                // garbage that i have to clean but keep the is-done class whether on src or target el
                 if (dragSrcEl_.classList.contains('is-done') && !dragTrgEl_.classList.contains('is-done')) {
                     dragSrcEl_.classList.remove('is-done');
                     dragTrgEl_.classList.add('is-done');
@@ -282,6 +287,13 @@ var managerController = (function(dataCtrl, uiCtrl, dndCtrl) {
         var input, value, DOM;
         
         DOM = uiCtrl.getDOMstrings();
+
+        // clear list container
+        var container = document.querySelector(DOM.listContainer);
+        var emptyStateEl = document.querySelector(DOM.empty);
+        if (container.contains(emptyStateEl)) {
+            document.querySelector(DOM.listContainer).removeChild(emptyStateEl);
+        }
 
         // get input data
         input = uiCtrl.getInput();

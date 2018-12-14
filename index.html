@@ -14,10 +14,34 @@
           /* Required to make elements draggable in old WebKit */
           -khtml-user-drag: element;
           -webkit-user-drag: element;
+          opacity: 0;
         }
 
         .draggable.over {
             background-color: #eee;
+        }
+
+        .header {
+            padding: 4em 0;
+            background-color: #33C3F0;
+        }
+
+        .draggable.fade {
+            -webkit-animation: fade 5s;
+            animation: fade .3s;
+            opacity: 1;
+        }
+
+        @-webkit-keyframes fade {
+            from {opacity: 0}
+            to {opacity: 1}
+        }@keyframes fade {
+            from {opacity: 0}
+            to {opacity: 1}
+        }
+
+        .header h1 {
+            color: #fff;
         }
 
         .list .row,
@@ -29,6 +53,10 @@
             padding: 20px 10px;
         }
 
+        .list {
+            margin: 5em 0;
+        }
+
         .list .row:hover {
             border: 1px dashed #ccc;
             background-color: #eee;
@@ -36,6 +64,10 @@
             cursor: move;
         }
 
+        .list .row {
+            transition: all .3s linear;
+        } 
+        
         .list-item {
             text-align: left;
         }
@@ -54,6 +86,7 @@
 
         button {
             margin-bottom: 0;
+            background-color: #fff;
         }
         
         .listWrapper,
@@ -84,7 +117,7 @@
 </head>
 <body>
     <div class="listWrapper">
-        <div class="container">
+        <header class="header">
             <h1>To Do List</h1>
             <div class="row">
                 <div class="form">
@@ -92,11 +125,16 @@
                     <button class="btn-submit">Add</button>
                 </div>
             </div>
+        </header>
+        <div class="container">
             <div class="list">
+                <div class="empty-state"><img class="empty-state" src="assets/empty_state.svg" width="300"></div>
                 <div class="error-message"></div>
             </div>
-            <div class="counter"><span class="counter-done">0</span>/<span class="counter-total">0</span></div>
         </div>
+        <footer class="footer">
+            <div class="counter"><span class="counter-done">0</span>/<span class="counter-total">0 task done</span></div>
+        </footer>
     </div>
 </body>
 <script type="text/javascript" src="app.js"></script>
